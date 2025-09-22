@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vehicle-store-db-init
+  namespace: vehicle-store
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: alembic-migrate
+        image: kauan4453/vehicle-store-api:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for database to be ready..."
+          until pg_isready -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER; do
+            sleep 2
+          done
+          echo "Database is ready, running migrations..."
+          alembic upgrade head
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: vehicle-store-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vehicle-store-secrets
+              key: postgres-password
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: vehicle-store-config
+              key: POSTGRES_HOST
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: vehicle-store-config
+              key: POSTGRES_PORT
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: vehicle-store-secrets
+              key: postgres-db
