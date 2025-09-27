@@ -35,7 +35,6 @@ This project follows Clean Architecture with clear separation of concerns:
 - Process vehicle sales
 - Payment integration via webhook
 - Automatic vehicle status updates
-- Sale confirmation notifications
 
 ### Payment Integration
 - Payment processing through external gateway
@@ -75,24 +74,6 @@ docker-compose up --build
 
 The API will be available at `http://localhost:8000`
 
-### Manual Setup
-
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Set up PostgreSQL database
-
-3. Run migrations:
-```bash
-alembic upgrade head
-```
-
-4. Start the server:
-```bash
-uvicorn main:app --reload
-```
 
 ## Database Schema
 
@@ -122,24 +103,3 @@ The system uses PostgreSQL with the following main entities:
 Interactive API documentation is available at:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
-
-## Testing
-
-The application includes comprehensive unit tests for all layers:
-
-```bash
-pytest
-```
-
-## Environment Variables
-
-- `DATABASE_URL`: PostgreSQL connection string
-- Default: `postgresql://admin:password@localhost:5432/vehicle_store`
-
-## Contributing
-
-1. Follow the established architecture patterns
-2. Maintain clear separation between layers
-3. Write comprehensive tests
-4. Use dependency injection for all external dependencies
-5. Keep business logic pure and framework-independent
