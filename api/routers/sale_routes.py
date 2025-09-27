@@ -187,30 +187,3 @@ async def payment_webhook_by_code(
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-
-@router.post("/webhook/payment-by-id", status_code=status.HTTP_200_OK)
-async def payment_webhook_by_id(
-        payment_data: PaymentWebhookByIdSchema,
-        controller: SaleController = Depends(get_sale_controller)
-):
-    """
-    Webhook endpoint for payment status updates using sale ID.
-    External payment service calls this endpoint to update payment status.
-
-    Args:
-        payment_data: Payment webhook data containing sale_id and status
-        controller: Sale controller dependency
-
-    Returns:
-        Dict: Updated payment status information
-
-    Raises:
-        HTTPException: If sale ID is not found
-    """
-    try:
-        result = await controller.update_payment_status_by_id(payment_data.model_dump())
-        if "error" in result:
-            raise HTTPException(status_code=result["status_code"], detail=result["error"])
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
